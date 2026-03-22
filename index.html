@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心血管系统术语构词1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+
+        .board-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #34495e;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 300px;
+        }
+
+        .tile {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            user-select: none;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tile:hover:not(.used) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tile.used {
+            opacity: 0.2;
+            cursor: not-allowed;
+            background: #bdc3c7 !important;
+        }
+
+        .tile.selected {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3);
+        }
+
+        .tile.prefix {
+            background: #d4e6f1;
+            color: #1a5276;
+        }
+
+        .tile.root {
+            background: #d5f4e6;
+            color: #1e8449;
+        }
+
+        .tile.suffix {
+            background: #fdebd0;
+            color: #9c640c;
+        }
+
+        .slot-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .word-slot {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            min-height: 80px;
+            align-items: center;
+        }
+
+        .slot-position {
+            width: 100px;
+            height: 70px;
+            border: 3px dashed #bdc3c7;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            position: relative;
+        }
+
+        .slot-position.filled {
+            border-style: solid;
+            border-color: #3498db;
+        }
+
+        .slot-tile {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-undo {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-undo:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-restart {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-restart:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .info-section {
+            background: #e8f6f3;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #1abc9c;
+        }
+
+        .last-term {
+            font-size: 18px;
+            color: #16a085;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .term-details {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .term-list {
+            margin-top: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .term-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .term-item.completed {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .term-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal h2 {
+            color: #27ae60;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .modal button {
+            margin-top: 20px;
+            background: #3498db;
+            color: white;
+            padding: 15px 30px;
+        }
+
+        .modal button:hover {
+            background: #2980b9;
+        }
+
+        .empty-slot-text {
+            color: #bdc3c7;
+            font-size: 12px;
+        }
+
+        .error-shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .sound-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <button class="sound-toggle" onclick="toggleSound()" id="sound-btn">🔊</button>
+    
+    <div class="container">
+        <h1>🏥 心血管系统术语构词1</h1>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-label">得分</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">进度</div>
+                <div class="stat-value"><span id="completed">0</span> / <span id="total">13</span></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">时间</div>
+                <div class="stat-value" id="timer">0s</div>
+            </div>
+        </div>
+
+        <div class="board-section">
+            <div class="section-title">📋 构词成分棋盘</div>
+            <div id="game-board"></div>
+        </div>
+
+        <div class="slot-section">
+            <div class="section-title">🎯 单词槽 (最大3个)</div>
+            <div class="word-slot" id="word-slot">
+                <div class="slot-position" data-index="0">
+                    <span class="empty-slot-text">空</span>
+                </div>
+                <div class="slot-position" data-index="1">
+                    <span class="empty-slot-text">空</span>
+                </div>
+                <div class="slot-position" data-index="2">
+                    <span class="empty-slot-text">空</span>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn-undo" onclick="undoLast()">↩️ 撤回一步</button>
+                <button class="btn-clear" onclick="clearSlot()">🗑️ 清空槽位</button>
+                <button class="btn-restart" onclick="restartGame()">🔄 重新开始</button>
+            </div>
+        </div>
+
+        <div class="info-section" id="info-section" style="display: none;">
+            <div class="last-term" id="last-term"></div>
+            <div class="term-details" id="term-details"></div>
+        </div>
+
+        <div class="section-title" style="margin-top: 20px;">📚 术语表</div>
+        <div class="term-list" id="term-list"></div>
+    </div>
+
+    <div class="modal" id="win-modal">
+        <div class="modal-content">
+            <h2>🎉 Congratulations!</h2>
+            <p>完成全部术语!</p>
+            <p>总得分: <strong id="final-score">0</strong></p>
+            <p>总用时: <strong id="final-time">0</strong> 秒</p>
+            <button onclick="restartGame()">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        // 音效开关
+        let soundEnabled = true;
+        
+        // Web Audio API 上下文
+        let audioContext = null;
+        
+        // 初始化音频上下文
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+        
+        // 播放成功音效（清脆的"叮"声）
+        function playSuccessSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const now = audioContext.currentTime;
+                
+                // 创建两个振荡器产生和弦效果
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // 设置频率（C5 和 E5 和弦）
+                osc1.frequency.setValueAtTime(523.25, now);
+                osc2.frequency.setValueAtTime(659.25, now);
+                
+                // 设置波形
+                osc1.type = 'sine';
+                osc2.type = 'sine';
+                
+                // 设置音量包络
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                
+                // 播放
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.5);
+                osc2.stop(now + 0.5);
+                
+                // 添加高频闪烁效果
+                const osc3 = audioContext.createOscillator();
+                const gain3 = audioContext.createGain();
+                osc3.connect(gain3);
+                gain3.connect(audioContext.destination);
+                osc3.frequency.setValueAtTime(1046.5, now);
+                osc3.type = 'triangle';
+                gain3.gain.setValueAtTime(0, now);
+                gain3.gain.linearRampToValueAtTime(0.1, now + 0.05);
+                gain3.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc3.start(now);
+                osc3.stop(now + 0.3);
+                
+            } catch (e) {
+                console.log('音效播放失败:', e);
+            }
+        }
+        
+        // 播放错误音效（低沉的"嘟"声）
+        function playErrorSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const now = audioContext.currentTime;
+                const osc = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // 设置低频（150Hz 到 100Hz 下滑）
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+                
+                // 使用锯齿波产生刺耳感
+                osc.type = 'sawtooth';
+                
+                // 设置音量包络
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                
+                // 播放
+                osc.start(now);
+                osc.stop(now + 0.3);
+                
+                // 添加第二个更低的音调增强错误感
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.setValueAtTime(80, now);
+                osc2.type = 'square';
+                gain2.gain.setValueAtTime(0.2, now);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc2.start(now);
+                osc2.stop(now + 0.3);
+                
+            } catch (e) {
+                console.log('音效播放失败:', e);
+            }
+        }
+        
+        // 切换音效开关
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        // 模块定义
+        const modules = {
+            // 前缀
+            tachy: { id: "tachy", text: "tachy-", type: "prefix" },
+            peri: { id: "peri", text: "peri-", type: "prefix" },
+            hyper: { id: "hyper", text: "hyper-", type: "prefix" },
+            hypo: { id: "hypo", text: "hypo-", type: "prefix" },
+            // 词根
+            cardio: { id: "cardio", text: "cardi/o", type: "root" },
+            thrombo: { id: "thrombo", text: "thromb/o", type: "root" },
+            phlebo: { id: "phlebo", text: "phleb/o", type: "root" },
+            arterio: { id: "arterio", text: "arteri/o", type: "root" },
+            sclero: { id: "sclero", text: "scler/o", type: "root" },
+            cholesterol: { id: "cholesterol", text: "cholesterol", type: "root" },
+            oxy: { id: "oxy", text: "ox/y", type: "root" },
+            sphygmo: { id: "sphygmo", text: "sphygm/o", type: "root" },
+            mano: { id: "mano", text: "man/o", type: "root" },
+            angio: { id: "angio", text: "angi/o", type: "root" },
+            valvulo: { id: "valvulo", text: "valvul/o", type: "root" },
+            hemo: { id: "hemo", text: "hem/o", type: "root" },
+            cyano: { id: "cyano", text: "cyan/o", type: "root" },
+            myxo: { id: "myxo", text: "myx/o", type: "root" },
+            // 后缀
+            ia: { id: "ia", text: "-ia", type: "suffix" },
+            centesis: { id: "centesis", text: "-centesis", type: "suffix" },
+            itis: { id: "itis", text: "-itis", type: "suffix" },
+            osis: { id: "osis", text: "-osis", type: "suffix" },
+            emia: { id: "emia", text: "-emia", type: "suffix" },
+            meter: { id: "meter", text: "-meter", type: "suffix" },
+            gram: { id: "gram", text: "-gram", type: "suffix" },
+            logy: { id: "logy", text: "-logy", type: "suffix" },
+            lysis: { id: "lysis", text: "-lysis", type: "suffix" },
+            oma: { id: "oma", text: "-oma", type: "suffix" }
+        };
+
+        // 术语表
+        const terms = [
+            // 三消术语 (7个)
+            { name: "tachycardia", parts: ["tachy", "cardio", "ia"], breakdown: "tachy- + cardi/o + -ia", meaning: "rapid heartbeat", score: 120 },
+            { name: "pericardiocentesis", parts: ["peri", "cardio", "centesis"], breakdown: "peri- + cardi/o + -centesis", meaning: "surgical puncture around the heart", score: 120 },
+            { name: "thrombophlebitis", parts: ["thrombo", "phlebo", "itis"], breakdown: "thromb/o + phleb/o + -itis", meaning: "inflammation of a vein associated with a clot", score: 120 },
+            { name: "arteriosclerosis", parts: ["arterio", "sclero", "osis"], breakdown: "arteri/o + scler/o + -osis", meaning: "abnormal hardening of an artery", score: 120 },
+            { name: "hypercholesterolemia", parts: ["hyper", "cholesterol", "emia"], breakdown: "hyper- + cholesterol + -emia", meaning: "condition of high cholesterol in the blood", score: 120 },
+            { name: "hypoxia", parts: ["hypo", "oxy", "ia"], breakdown: "hypo- + ox/y + -ia", meaning: "condition of low oxygen", score: 120 },
+            { name: "sphygmomanometer", parts: ["sphygmo", "mano", "meter"], breakdown: "sphygm/o + man/o + -meter", meaning: "instrument for measuring blood pressure", score: 120 },
+            // 双消术语 (6个)
+            { name: "cardiology", parts: ["cardio", "logy"], breakdown: "cardi/o + -logy", meaning: "study of the heart", score: 80 },
+            { name: "angiogram", parts: ["angio", "gram"], breakdown: "angi/o + -gram", meaning: "record or image of a vessel", score: 80 },
+            { name: "valvulitis", parts: ["valvulo", "itis"], breakdown: "valvul/o + -itis", meaning: "inflammation of a valve", score: 80 },
+            { name: "hemolysis", parts: ["hemo", "lysis"], breakdown: "hem/o + -lysis", meaning: "destruction of blood cells", score: 80 },
+            { name: "cyanosis", parts: ["cyano", "osis"], breakdown: "cyan/o + -osis", meaning: "bluish condition", score: 80 },
+            { name: "myxoma", parts: ["myxo", "oma"], breakdown: "myx/o + -oma", meaning: "mucous tumor", score: 80 }
+        ];
+
+        // 游戏状态
+        let gameState = {
+            board: [],
+            slot: [],
+            completedTerms: [],
+            score: 0,
+            startTime: null,
+            timerInterval: null,
+            gameEnded: false
+        };
+
+        // 统计每个模块需要的数量
+        function calculateModuleRequirements() {
+            const requirements = {};
+            terms.forEach(term => {
+                term.parts.forEach(partId => {
+                    requirements[partId] = (requirements[partId] || 0) + 1;
+                });
+            });
+            return requirements;
+        }
+
+        // 生成棋盘
+        function generateBoard() {
+            const requirements = calculateModuleRequirements();
+            const board = [];
+            let idCounter = 0;
+            
+            for (const [moduleId, count] of Object.entries(requirements)) {
+                for (let i = 0; i < count; i++) {
+                    board.push({
+                        ...modules[moduleId],
+                        uniqueId: idCounter++,
+                        used: false
+                    });
+                }
+            }
+            
+            // Fisher-Yates 洗牌算法
+            for (let i = board.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [board[i], board[j]] = [board[j], board[i]];
+            }
+            
+            return board;
+        }
+
+        // 初始化游戏
+        function initGame() {
+            gameState = {
+                board: generateBoard(),
+                slot: [],
+                completedTerms: [],
+                score: 0,
+                startTime: Date.now(),
+                timerInterval: setInterval(updateTimer, 1000),
+                gameEnded: false
+            };
+            
+            renderBoard();
+            renderSlot();
+            renderTermList();
+            updateStats();
+            document.getElementById('info-section').style.display = 'none';
+            document.getElementById('win-modal').style.display = 'none';
+            
+            // 初始化音频（用户首次交互后可用）
+            document.addEventListener('click', initAudio, { once: true });
+        }
+
+        // 更新计时器
+        function updateTimer() {
+            if (gameState.gameEnded) return;
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            document.getElementById('timer').textContent = elapsed + 's';
+        }
+
+        // 获取总用时
+        function getTotalTime() {
+            return Math.floor((Date.now() - gameState.startTime) / 1000);
+        }
+
+        // 渲染棋盘
+        function renderBoard() {
+            const boardEl = document.getElementById('game-board');
+            boardEl.innerHTML = '';
+            
+            gameState.board.forEach((tile, index) => {
+                const tileEl = document.createElement('div');
+                tileEl.className = `tile ${tile.type} ${tile.used ? 'used' : ''} ${isInSlot(index) ? 'selected' : ''}`;
+                tileEl.textContent = tile.text;
+                tileEl.onclick = () => handleTileClick(index);
+                boardEl.appendChild(tileEl);
+            });
+        }
+
+        // 检查某个棋盘索引是否已在单词槽中
+        function isInSlot(boardIndex) {
+            return gameState.slot.some(s => s.boardIndex === boardIndex);
+        }
+
+        // 处理点击棋块
+        function handleTileClick(boardIndex) {
+            if (gameState.gameEnded) return;
+            const tile = gameState.board[boardIndex];
+            if (tile.used) return;
+            
+            // 检查是否已在槽中
+            const slotIndex = gameState.slot.findIndex(s => s.boardIndex === boardIndex);
+            if (slotIndex !== -1) {
+                gameState.slot.splice(slotIndex, 1);
+                renderBoard();
+                renderSlot();
+                return;
+            }
+            
+            // 槽已满(3个)
+            if (gameState.slot.length >= 3) return;
+            
+            // 添加到槽
+            gameState.slot.push({
+                boardIndex: boardIndex,
+                moduleId: tile.id
+            });
+            
+            renderBoard();
+            renderSlot();
+            checkMatch();
+        }
+
+        // 渲染单词槽
+        function renderSlot() {
+            const slotPositions = document.querySelectorAll('.slot-position');
+            
+            slotPositions.forEach((pos, index) => {
+                // 移除错误动画类
+                pos.classList.remove('error-shake');
+                
+                if (index < gameState.slot.length) {
+                    const slotItem = gameState.slot[index];
+                    const tile = gameState.board[slotItem.boardIndex];
+                    pos.innerHTML = `<div class="slot-tile ${tile.type}">${tile.text}</div>`;
+                    pos.classList.add('filled');
+                } else {
+                    pos.innerHTML = '<span class="empty-slot-text">空</span>';
+                    pos.classList.remove('filled');
+                }
+            });
+        }
+
+        // 检查是否匹配术语
+        function checkMatch() {
+            const slotIds = gameState.slot.map(s => s.moduleId);
+            const slotLength = slotIds.length;
+            
+            // 只有在2个或3个时才检查
+            if (slotLength !== 2 && slotLength !== 3) return;
+            
+            // 查找匹配的未完成的术语
+            const matchedTerm = terms.find(term => {
+                if (gameState.completedTerms.includes(term.name)) return false;
+                if (term.parts.length !== slotLength) return false;
+                // 检查顺序是否完全一致
+                return term.parts.every((part, idx) => part === slotIds[idx]);
+            });
+            
+            if (matchedTerm) {
+                // 匹配成功！
+                playSuccessSound();
+                completeTerm(matchedTerm);
+            } else {
+                // 匹配失败 - 判断是否应该播放错误音效
+                // 只有当确定无法匹配任何可能的术语时才播放错误音效
+                let shouldPlayError = false;
+                
+                if (slotLength === 2) {
+                    // 槽中有2个元素
+                    // 1. 检查是否有未完成的2元素术语匹配
+                    const hasMatching2Term = terms.some(term => {
+                        if (gameState.completedTerms.includes(term.name)) return false;
+                        if (term.parts.length !== 2) return false;
+                        return term.parts[0] === slotIds[0] && term.parts[1] === slotIds[1];
+                    });
+                    
+                    // 2. 检查是否有未完成的3元素术语以这两个元素开头
+                    const hasPotential3Term = terms.some(term => {
+                        if (gameState.completedTerms.includes(term.name)) return false;
+                        if (term.parts.length !== 3) return false;
+                        return term.parts[0] === slotIds[0] && term.parts[1] === slotIds[1];
+                    });
+                    
+                    // 如果既不是有效的2元素术语，也不是任何3元素术语的前缀，才播放错误音效
+                    shouldPlayError = !hasMatching2Term && !hasPotential3Term;
+                    
+                } else if (slotLength === 3) {
+                    // 槽中有3个元素，直接判断是否匹配任何3元素术语
+                    const hasMatching3Term = terms.some(term => {
+                        if (gameState.completedTerms.includes(term.name)) return false;
+                        if (term.parts.length !== 3) return false;
+                        return term.parts.every((part, idx) => part === slotIds[idx]);
+                    });
+                    
+                    shouldPlayError = !hasMatching3Term;
+                }
+                
+                if (shouldPlayError) {
+                    playErrorSound();
+                    const slotEl = document.getElementById('word-slot');
+                    slotEl.classList.add('error-shake');
+                    setTimeout(() => {
+                        slotEl.classList.remove('error-shake');
+                    }, 500);
+                }
+            }
+        }
+
+        // 完成术语
+        function completeTerm(term) {
+            // 标记棋块为已使用
+            gameState.slot.forEach(slotItem => {
+                gameState.board[slotItem.boardIndex].used = true;
+            });
+            
+            // 清空槽
+            gameState.slot = [];
+            
+            // 记录完成
+            gameState.completedTerms.push(term.name);
+            gameState.score += term.score;
+            
+            // 显示信息
+            document.getElementById('info-section').style.display = 'block';
+            document.getElementById('last-term').textContent = `✅ ${term.name}`;
+            document.getElementById('term-details').innerHTML = `
+                <strong>构词:</strong> ${term.breakdown}<br>
+                <strong>释义:</strong> ${term.meaning}
+            `;
+            
+            // 更新显示
+            renderBoard();
+            renderSlot();
+            renderTermList();
+            updateStats();
+            
+            // 检查是否完成所有术语
+            if (gameState.completedTerms.length === terms.length) {
+                endGame();
+            }
+        }
+
+        // 更新统计
+        function updateStats() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('completed').textContent = gameState.completedTerms.length;
+        }
+
+        // 渲染术语列表
+        function renderTermList() {
+            const listEl = document.getElementById('term-list');
+            listEl.innerHTML = terms.map(term => `
+                <div class="term-item ${gameState.completedTerms.includes(term.name) ? 'completed' : ''}">
+                    ${gameState.completedTerms.includes(term.name) ? '✓' : '○'} 
+                    <strong>${term.name}</strong> - ${term.meaning}
+                    ${gameState.completedTerms.includes(term.name) ? ' (已完成)' : ''}
+                </div>
+            `).join('');
+        }
+
+        // 撤回一步
+        function undoLast() {
+            if (gameState.slot.length > 0) {
+                gameState.slot.pop();
+                renderBoard();
+                renderSlot();
+            }
+        }
+
+        // 清空槽位
+        function clearSlot() {
+            if (gameState.slot.length > 0) {
+                gameState.slot = [];
+                renderBoard();
+                renderSlot();
+            }
+        }
+
+        // 结束游戏
+        function endGame() {
+            gameState.gameEnded = true;
+            clearInterval(gameState.timerInterval);
+            const totalTime = getTotalTime();
+            
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('final-time').textContent = totalTime;
+            document.getElementById('win-modal').style.display = 'flex';
+        }
+
+        // 重新开始
+        function restartGame() {
+            clearInterval(gameState.timerInterval);
+            initGame();
+        }
+
+        // 页面加载完成后初始化
+        window.onload = initGame;
+    </script>
+</body>
+</html>
